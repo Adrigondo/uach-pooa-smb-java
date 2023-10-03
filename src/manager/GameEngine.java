@@ -6,6 +6,13 @@ import view.StartScreenSelection;
 import view.UIManager;
 
 import javax.swing.*;
+
+import factories.ChristmasFactory;
+import factories.CommonFactory;
+import factories.DiaDeMuertosFactory;
+import factories.GUIFactory;
+import factories.HalloweenFactory;
+
 import java.awt.*;
 
 public class GameEngine implements Runnable {
@@ -18,7 +25,9 @@ public class GameEngine implements Runnable {
     private GameStatus gameStatus;
     private boolean isRunning;
     private Camera camera;
-    private ImageLoader imageLoader;
+    public GUIFactory factory;
+    public ImageLoader imageLoader;
+    public Spritesheet spritesheet;
     private Thread thread;
     private StartScreenSelection startScreenSelection = StartScreenSelection.START_GAME;
     private int selectedMap = 0;
@@ -28,10 +37,15 @@ public class GameEngine implements Runnable {
     }
 
     private void init() {
-        imageLoader = new ImageLoader();
+        this.factory = new HalloweenFactory();
+        System.out.println("\n");
+        // System.out.println(factory.style + " " + this.factory.style);
+        imageLoader = factory.createImageLoader();
+        this.spritesheet = factory.createSpritesheet(imageLoader);
+
         InputManager inputManager = new InputManager(this);
         gameStatus = GameStatus.START_SCREEN;
-        camera = new Camera();
+        camera = new Camera(0, 0);
         uiManager = new UIManager(this, WIDTH, HEIGHT);
         soundManager = new SoundManager();
         mapManager = new MapManager();
@@ -58,13 +72,13 @@ public class GameEngine implements Runnable {
         thread.start();
     }
 
-    private void reset(){
-        resetCamera();
+    private void reset() {
+        resetCamera(0, 0);
         setGameStatus(GameStatus.START_SCREEN);
     }
 
-    public void resetCamera(){
-        camera = new Camera();
+    public void resetCamera(double x, double y) {
+        camera = new Camera(x, y);
         soundManager.restartBackground();
     }
 
@@ -75,20 +89,20 @@ public class GameEngine implements Runnable {
         }
     }
 
-    public void selectMapViaKeyboard(){
+    public void selectMapViaKeyboard() {
         String path = uiManager.selectMapViaKeyboard(selectedMap);
         if (path != null) {
             createMap(path);
         }
     }
 
-    public void changeSelectedMap(boolean up){
+    public void changeSelectedMap(boolean up) {
         selectedMap = uiManager.changeSelectedMap(selectedMap, up);
     }
 
     private void createMap(String path) {
-        boolean loaded = mapManager.createMap(imageLoader, path);
-        if(loaded){
+        boolean loaded = mapManager.createMap(this, path);
+        if (loaded) {
             setGameStatus(GameStatus.RUNNING);
             soundManager.restartBackground();
         }
@@ -118,7 +132,7 @@ public class GameEngine implements Runnable {
             }
             render();
 
-            if(gameStatus != GameStatus.RUNNING) {
+            if (gameStatus != GameStatus.RUNNING) {
                 timer = System.currentTimeMillis();
             }
 
@@ -139,14 +153,15 @@ public class GameEngine implements Runnable {
         updateCamera();
 
         if (isGameOver()) {
+            System.out.println("GameStatus.GAME_OVER");
             setGameStatus(GameStatus.GAME_OVER);
         }
 
         int missionPassed = passMission();
-        if(missionPassed > -1){
+        if (missionPassed > -1) {
             mapManager.acquirePoints(missionPassed);
-            //setGameStatus(GameStatus.MISSION_PASSED);
-        } else if(mapManager.endLevel())
+            // setGameStatus(GameStatus.MISSION_PASSED);
+        } else if (mapManager.endLevel())
             setGameStatus(GameStatus.MISSION_PASSED);
     }
 
@@ -184,15 +199,12 @@ public class GameEngine implements Runnable {
             } else if (input == ButtonAction.GO_DOWN) {
                 selectOption(false);
             }
-        }
-        else if(gameStatus == GameStatus.MAP_SELECTION){
-            if(input == ButtonAction.SELECT){
+        } else if (gameStatus == GameStatus.MAP_SELECTION) {
+            if (input == ButtonAction.SELECT) {
                 selectMapViaKeyboard();
-            }
-            else if(input == ButtonAction.GO_UP){
+            } else if (input == ButtonAction.GO_UP) {
                 changeSelectedMap(true);
-            }
-            else if(input == ButtonAction.GO_DOWN){
+            } else if (input == ButtonAction.GO_DOWN) {
                 changeSelectedMap(false);
             }
         } else if (gameStatus == GameStatus.RUNNING) {
@@ -214,13 +226,13 @@ public class GameEngine implements Runnable {
             if (input == ButtonAction.PAUSE_RESUME) {
                 pauseGame();
             }
-        } else if(gameStatus == GameStatus.GAME_OVER && input == ButtonAction.GO_TO_START_SCREEN){
+        } else if (gameStatus == GameStatus.GAME_OVER && input == ButtonAction.GO_TO_START_SCREEN) {
             reset();
-        } else if(gameStatus == GameStatus.MISSION_PASSED && input == ButtonAction.GO_TO_START_SCREEN){
+        } else if (gameStatus == GameStatus.MISSION_PASSED && input == ButtonAction.GO_TO_START_SCREEN) {
             reset();
         }
 
-        if(input == ButtonAction.GO_TO_START_SCREEN){
+        if (input == ButtonAction.GO_TO_START_SCREEN) {
             setGameStatus(GameStatus.START_SCREEN);
         }
     }
@@ -245,18 +257,26 @@ public class GameEngine implements Runnable {
         }
     }
 
-    public void shakeCamera(){
+    public void shakeCamera() {
         camera.shakeCamera();
     }
 
     private boolean isGameOver() {
-        if(gameStatus == GameStatus.RUNNING)
+        if (gameStatus == GameStatus.RUNNING)
             return mapManager.isGameOver();
         return false;
     }
 
+    public GUIFactory getFactory() {
+        return factory;
+    }
+
     public ImageLoader getImageLoader() {
         return imageLoader;
+    }
+
+    public Spritesheet getSpritesheet() {
+        return spritesheet;
     }
 
     public GameStatus getGameStatus() {
@@ -292,10 +312,10 @@ public class GameEngine implements Runnable {
     }
 
     public Point getCameraLocation() {
-        return new Point((int)camera.getX(), (int)camera.getY());
+        return new Point((int) camera.getX(), (int) camera.getY());
     }
 
-    private int passMission(){
+    private int passMission() {
         return mapManager.passMission();
     }
 
@@ -335,11 +355,12 @@ public class GameEngine implements Runnable {
         return mapManager;
     }
 
+    public int getRemainingTime() {
+        return mapManager.getRemainingTime();
+    }
+
     public static void main(String... args) {
         new GameEngine();
     }
 
-    public int getRemainingTime() {
-        return mapManager.getRemainingTime();
-    }
 }

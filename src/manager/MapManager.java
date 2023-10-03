@@ -15,11 +15,14 @@ import view.ImageLoader;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class MapManager {
+import factories.GUIFactory;
 
+public class MapManager {
+    private ImageLoader imageLoader;
     private Map map;
 
-    public MapManager() {}
+    public MapManager() {
+    }
 
     public void updateLocations() {
         if (map == null)
@@ -31,13 +34,13 @@ public class MapManager {
     public void resetCurrentMap(GameEngine engine) {
         Mario mario = getMario();
         mario.resetLocation();
-        engine.resetCamera();
-        createMap(engine.getImageLoader(), map.getPath());
+        engine.resetCamera(mario.getX() - 48 * 10, 0);
+        createMap(engine, map.getPath());
         map.setMario(mario);
     }
 
-    public boolean createMap(ImageLoader loader, String path) {
-        MapCreator mapCreator = new MapCreator(loader);
+    public boolean createMap(GameEngine engine, String path) {
+        MapCreator mapCreator = new MapCreator(engine.getFactory(), engine.getImageLoader(), engine.getSpritesheet());
         map = mapCreator.createMap("/maps/" + path, 400);
 
         return map != null;
@@ -60,6 +63,8 @@ public class MapManager {
     }
 
     public boolean isGameOver() {
+        // System.out.println(getMario().getRemainingLives());
+        // System.out.println(map.isTimeOver());
         return getMario().getRemainingLives() == 0 || map.isTimeOver();
     }
 
@@ -80,16 +85,15 @@ public class MapManager {
     }
 
     public int passMission() {
-        if(getMario().getX() >= map.getEndPoint().getX() && !map.getEndPoint().isTouched()){
+        if (getMario().getX() >= map.getEndPoint().getX() && !map.getEndPoint().isTouched()) {
             map.getEndPoint().setTouched(true);
-            int height = (int)getMario().getY();
+            int height = (int) getMario().getY();
             return height * 2;
-        }
-        else
+        } else
             return -1;
     }
 
-    public boolean endLevel(){
+    public boolean endLevel() {
         return getMario().getX() >= map.getEndPoint().getX() + 320;
     }
 
@@ -156,13 +160,13 @@ public class MapManager {
                 mario.setVelY(0);
                 mario.setY(brick.getY() + brick.getDimension().height);
                 Prize prize = brick.reveal(engine);
-                if(prize != null)
+                if (prize != null)
                     map.addRevealedPrize(prize);
             }
         }
     }
 
-    private void checkMarioHorizontalCollision(GameEngine engine){
+    private void checkMarioHorizontalCollision(GameEngine engine) {
         Mario mario = getMario();
         ArrayList<Brick> bricks = map.getAllBricks();
         ArrayList<Enemy> enemies = map.getEnemies();
@@ -177,14 +181,14 @@ public class MapManager {
             Rectangle brickBounds = !toRight ? brick.getRightBounds() : brick.getLeftBounds();
             if (marioBounds.intersects(brickBounds)) {
                 mario.setVelX(0);
-                if(toRight)
+                if (toRight)
                     mario.setX(brick.getX() - mario.getDimension().width);
                 else
                     mario.setX(brick.getX() + brick.getDimension().width);
             }
         }
 
-        for(Enemy enemy : enemies){
+        for (Enemy enemy : enemies) {
             Rectangle enemyBounds = !toRight ? enemy.getRightBounds() : enemy.getLeftBounds();
             if (marioBounds.intersects(enemyBounds)) {
                 marioDies = mario.onTouchEnemy(engine);
@@ -193,13 +197,12 @@ public class MapManager {
         }
         removeObjects(toBeRemoved);
 
-
         if (mario.getX() <= engine.getCameraLocation().getX() && mario.getVelX() < 0) {
             mario.setVelX(0);
             mario.setX(engine.getCameraLocation().getX());
         }
 
-        if(marioDies) {
+        if (marioDies) {
             resetCurrentMap(engine);
         }
     }
@@ -227,21 +230,21 @@ public class MapManager {
                     enemy.setVelX(-enemy.getVelX());
                 }
 
-                if (enemyBottomBounds.intersects(brickTopBounds)){
+                if (enemyBottomBounds.intersects(brickTopBounds)) {
                     enemy.setFalling(false);
                     enemy.setVelY(0);
-                    enemy.setY(brick.getY()-enemy.getDimension().height);
+                    enemy.setY(brick.getY() - enemy.getDimension().height);
                     standsOnBrick = true;
                 }
             }
 
-            if(enemy.getY() + enemy.getDimension().height > map.getBottomBorder()){
+            if (enemy.getY() + enemy.getDimension().height > map.getBottomBorder()) {
                 enemy.setFalling(false);
                 enemy.setVelY(0);
-                enemy.setY(map.getBottomBorder()-enemy.getDimension().height);
+                enemy.setY(map.getBottomBorder() - enemy.getDimension().height);
             }
 
-            if (!standsOnBrick && enemy.getY() < map.getBottomBorder()){
+            if (!standsOnBrick && enemy.getY() < map.getBottomBorder()) {
                 enemy.setFalling(true);
             }
         }
@@ -306,12 +309,12 @@ public class MapManager {
         ArrayList<GameObject> toBeRemoved = new ArrayList<>();
 
         Rectangle marioBounds = getMario().getBounds();
-        for(Prize prize : prizes){
+        for (Prize prize : prizes) {
             Rectangle prizeBounds = prize.getBounds();
             if (prizeBounds.intersects(marioBounds)) {
                 prize.onTouch(getMario(), engine);
                 toBeRemoved.add((GameObject) prize);
-            } else if(prize instanceof Coin){
+            } else if (prize instanceof Coin) {
                 prize.onTouch(getMario(), engine);
             }
         }
@@ -325,10 +328,10 @@ public class MapManager {
         ArrayList<Brick> bricks = map.getAllBricks();
         ArrayList<GameObject> toBeRemoved = new ArrayList<>();
 
-        for(Fireball fireball : fireballs){
+        for (Fireball fireball : fireballs) {
             Rectangle fireballBounds = fireball.getBounds();
 
-            for(Enemy enemy : enemies){
+            for (Enemy enemy : enemies) {
                 Rectangle enemyBounds = enemy.getBounds();
                 if (fireballBounds.intersects(enemyBounds)) {
                     acquirePoints(100);
@@ -337,7 +340,7 @@ public class MapManager {
                 }
             }
 
-            for(Brick brick : bricks){
+            for (Brick brick : bricks) {
                 Rectangle brickBounds = brick.getBounds();
                 if (fireballBounds.intersects(brickBounds)) {
                     toBeRemoved.add(fireball);
@@ -348,19 +351,17 @@ public class MapManager {
         removeObjects(toBeRemoved);
     }
 
-    private void removeObjects(ArrayList<GameObject> list){
-        if(list == null)
+    private void removeObjects(ArrayList<GameObject> list) {
+        if (list == null)
             return;
 
-        for(GameObject object : list){
-            if(object instanceof Fireball){
-                map.removeFireball((Fireball)object);
-            }
-            else if(object instanceof Enemy){
-                map.removeEnemy((Enemy)object);
-            }
-            else if(object instanceof Coin || object instanceof BoostItem){
-                map.removePrize((Prize)object);
+        for (GameObject object : list) {
+            if (object instanceof Fireball) {
+                map.removeFireball((Fireball) object);
+            } else if (object instanceof Enemy) {
+                map.removeEnemy((Enemy) object);
+            } else if (object instanceof Coin || object instanceof BoostItem) {
+                map.removePrize((Prize) object);
             }
         }
     }
@@ -369,12 +370,12 @@ public class MapManager {
         map.addRevealedBrick(ordinaryBrick);
     }
 
-    public void updateTime(){
-        if(map != null)
+    public void updateTime() {
+        if (map != null)
             map.updateTime(1);
     }
 
     public int getRemainingTime() {
-        return (int)map.getRemainingTime();
+        return (int) map.getRemainingTime();
     }
 }

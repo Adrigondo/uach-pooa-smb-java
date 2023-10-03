@@ -8,7 +8,7 @@ import view.ImageLoader;
 
 import java.awt.image.BufferedImage;
 
-public class SurpriseBrick extends Brick{
+public class SurpriseBrick extends Brick {
 
     private Prize prize;
 
@@ -20,11 +20,11 @@ public class SurpriseBrick extends Brick{
     }
 
     @Override
-    public Prize reveal(GameEngine engine){
-        BufferedImage newStyle = engine.getImageLoader().loadImage("/sprite.png");
+    public Prize reveal(GameEngine engine) {
+        BufferedImage newStyle = engine.getSpritesheet().sprite;
         newStyle = engine.getImageLoader().getSubImage(newStyle, 1, 2, 48, 48);
 
-        if(prize != null){
+        if (prize != null) {
             prize.reveal();
         }
 
@@ -37,7 +37,7 @@ public class SurpriseBrick extends Brick{
     }
 
     @Override
-    public Prize getPrize(){
+    public Prize getPrize() {
         return prize;
     }
 }

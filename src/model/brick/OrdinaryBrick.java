@@ -16,27 +16,26 @@ public class OrdinaryBrick extends Brick {
     private boolean breaking;
     private int frames;
 
-    public OrdinaryBrick(double x, double y, BufferedImage style){
+    public OrdinaryBrick(double x, double y, BufferedImage style, ImageLoader imageLoader) {
         super(x, y, style);
         setBreakable(true);
         setEmpty(true);
 
-        setAnimation();
+        setAnimation(imageLoader);
         breaking = false;
         frames = animation.getLeftFrames().length;
     }
 
-    private void setAnimation(){
-        ImageLoader imageLoader = new ImageLoader();
+    private void setAnimation(ImageLoader imageLoader) {
         BufferedImage[] leftFrames = imageLoader.getBrickFrames();
 
         animation = new Animation(leftFrames, leftFrames);
     }
 
     @Override
-    public Prize reveal(GameEngine engine){
+    public Prize reveal(GameEngine engine) {
         MapManager manager = engine.getMapManager();
-        if(!manager.getMario().isSuper())
+        if (!manager.getMario().isSuper())
             return null;
 
         breaking = true;
@@ -48,12 +47,12 @@ public class OrdinaryBrick extends Brick {
         return null;
     }
 
-    public int getFrames(){
+    public int getFrames() {
         return frames;
     }
 
-    public void animate(){
-        if(breaking){
+    public void animate() {
+        if (breaking) {
             setStyle(animation.animate(3, true));
             frames--;
         }
