@@ -53,7 +53,7 @@ public class HalloweenFactory implements GUIFactory {
 
     @Override()
     public ImageLoader createImageLoader() {
-        ImageLoader imageLoader = new ImageLoader();
+        ImageLoader imageLoader = ImageLoader.getInstance();
         imageLoader.setMarioForms("/halloween/mario-forms.png");
         imageLoader.setBrickAnimation("/halloween/brick-animation.png");
         System.out.println(imageLoader);

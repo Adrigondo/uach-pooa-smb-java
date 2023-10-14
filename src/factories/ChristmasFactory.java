@@ -53,7 +53,7 @@ public class ChristmasFactory implements GUIFactory {
 
     @Override()
     public ImageLoader createImageLoader() {
-        ImageLoader imageLoader = new ImageLoader();
+        ImageLoader imageLoader = ImageLoader.getInstance();
         imageLoader.setMarioForms("/christmas/mario-forms.png");
         imageLoader.setBrickAnimation("/christmas/brick-animation.png");
         System.out.println(imageLoader);

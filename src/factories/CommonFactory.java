@@ -53,7 +53,7 @@ public class CommonFactory implements GUIFactory {
 
     @Override()
     public ImageLoader createImageLoader() {
-        ImageLoader imageLoader = new ImageLoader();
+        ImageLoader imageLoader = ImageLoader.getInstance();
         imageLoader.setMarioForms("/common/mario-forms.png");
         imageLoader.setBrickAnimation("/common/brick-animation.png");
         System.out.println(imageLoader);

@@ -7,10 +7,10 @@ import view.UIManager;
 
 import javax.swing.*;
 
+import factories.GUIFactory;
 import factories.ChristmasFactory;
 import factories.CommonFactory;
 import factories.DiaDeMuertosFactory;
-import factories.GUIFactory;
 import factories.HalloweenFactory;
 
 import java.awt.*;
@@ -37,7 +37,7 @@ public class GameEngine implements Runnable {
     }
 
     private void init() {
-        this.factory = new HalloweenFactory();
+        this.factory = new ChristmasFactory();
         System.out.println("\n");
         // System.out.println(factory.style + " " + this.factory.style);
         imageLoader = factory.createImageLoader();

@@ -12,10 +12,19 @@ public class ImageLoader {
 
     private BufferedImage marioForms;
     private BufferedImage brickAnimation;
+    private static ImageLoader instance;
 
-    public ImageLoader() {
+    private ImageLoader() {
         // marioForms = loadImage("/mario-forms.png");
         // brickAnimation = loadImage("/brick-animation.png");
+    }
+
+    public static ImageLoader getInstance() {
+        if (instance == null) {
+            instance = new ImageLoader();
+            return instance;
+        }
+        return instance;
     }
 
     public void setMarioForms(String path) {

@@ -1,6 +1,7 @@
 package factories;
 
 import java.awt.Dimension;
+import java.awt.Image;
 
 import manager.Spritesheet;
 import model.enemy.Goomba;
@@ -53,7 +54,7 @@ public class DiaDeMuertosFactory implements GUIFactory {
 
     @Override()
     public ImageLoader createImageLoader() {
-        ImageLoader imageLoader = new ImageLoader();
+        ImageLoader imageLoader = ImageLoader.getInstance();
         imageLoader.setMarioForms("/diaDeMuertos/mario-forms.png");
         imageLoader.setBrickAnimation("/diaDeMuertos/brick-animation.png");
         System.out.println(imageLoader);
