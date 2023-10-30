@@ -5,12 +5,14 @@ import java.awt.image.BufferedImage;
 
 public class KoopaTroopa extends Enemy{
 
-    private BufferedImage rightImage;
+    private final BufferedImage rightImage;
 
-    public KoopaTroopa(double x, double y, BufferedImage style) {
+    public KoopaTroopa(double x, double y, BufferedImage style, BufferedImage rightImage ) {
         super(x, y, style);
         setVelX(3);
+        this.rightImage = rightImage;
     }
+
 
     @Override
     public void draw(Graphics g){
@@ -21,7 +23,4 @@ public class KoopaTroopa extends Enemy{
             super.draw(g);
     }
 
-    public void setRightImage(BufferedImage rightImage) {
-        this.rightImage = rightImage;
-    }
 }

@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Image;
 
 import manager.Spritesheet;
+import model.enemy.EnemyFactory;
 import model.enemy.Goomba;
 import model.enemy.KoopaTroopa;
 import model.hero.Mario;
@@ -19,15 +20,13 @@ public class DiaDeMuertosFactory implements GUIFactory {
 
     @Override()
     public Goomba createGoomba(int xLocation, int yLocation, Spritesheet spritesheet) {
-        Goomba goomba = new Goomba(xLocation, yLocation, spritesheet.goombaRight);
-        ((Goomba) goomba).setRightImage(spritesheet.goombaRight);
+        Goomba goomba = new Goomba(xLocation, yLocation, spritesheet.goombaLeft, EnemyFactory.getRightImage("goomba",spritesheet.goombaRight));
         return goomba;
     }
 
     @Override()
     public KoopaTroopa createKoopaTroopa(int xLocation, int yLocation, Spritesheet spritesheet) {
-        KoopaTroopa koopaTroopa = new KoopaTroopa(xLocation, yLocation, spritesheet.koopaLeft);
-        ((KoopaTroopa) koopaTroopa).setRightImage(spritesheet.koopaRight);
+        KoopaTroopa koopaTroopa = new KoopaTroopa(xLocation, yLocation, spritesheet.koopaLeft, EnemyFactory.getRightImage("koopaTroopa",spritesheet.koopaRight));
         return koopaTroopa;
     }
 

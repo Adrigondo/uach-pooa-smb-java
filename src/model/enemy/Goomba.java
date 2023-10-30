@@ -5,11 +5,12 @@ import java.awt.image.BufferedImage;
 
 public class Goomba extends Enemy{
 
-    private BufferedImage rightImage;
+    private final BufferedImage rightImage;
 
-    public Goomba(double x, double y, BufferedImage style) {
+    public Goomba(double x, double y, BufferedImage style,BufferedImage rightImage ) {
         super(x, y, style);
         setVelX(3);
+        this.rightImage = rightImage;
     }
 
     @Override
@@ -19,9 +20,5 @@ public class Goomba extends Enemy{
         }
         else
             super.draw(g);
-    }
-
-    public void setRightImage(BufferedImage rightImage) {
-        this.rightImage = rightImage;
     }
 }
