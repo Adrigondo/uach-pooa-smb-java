@@ -2,7 +2,7 @@ package view;
 
 import javax.imageio.ImageIO;
 
-import model.hero.MarioForm;
+import model.hero.HeroForm;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -66,16 +66,16 @@ public class ImageLoader {
         return image.getSubimage((col - 1) * 48, (row - 1) * 48, w, h);
     }
 
-    public BufferedImage[] getLeftFrames(int marioForm) {
+    public BufferedImage[] getLeftFrames(int heroForm) {
         BufferedImage[] leftFrames = new BufferedImage[5];
         int col = 1;
         int width = 52, height = 48;
 
-        if (marioForm == MarioForm.SUPER) { // super mario
+        if (heroForm == HeroForm.SUPER) { // super mario
             col = 4;
             width = 48;
             height = 96;
-        } else if (marioForm == MarioForm.FIRE) { // fire mario
+        } else if (heroForm == HeroForm.FIRE) { // fire mario
             col = 7;
             width = 48;
             height = 96;
@@ -87,16 +87,16 @@ public class ImageLoader {
         return leftFrames;
     }
 
-    public BufferedImage[] getRightFrames(int marioForm) {
+    public BufferedImage[] getRightFrames(int heroForm) {
         BufferedImage[] rightFrames = new BufferedImage[5];
         int col = 2;
         int width = 52, height = 48;
 
-        if (marioForm == MarioForm.SUPER) { // super mario
+        if (heroForm == HeroForm.SUPER) { // super mario
             col = 5;
             width = 48;
             height = 96;
-        } else if (marioForm == MarioForm.FIRE) { // fire mario
+        } else if (heroForm == HeroForm.FIRE) { // fire mario
             col = 8;
             width = 48;
             height = 96;

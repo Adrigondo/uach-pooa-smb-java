@@ -63,7 +63,7 @@ public class MapManager {
     }
 
     public boolean isGameOver() {
-        // System.out.println(getMario().getRemainingLives());
+        System.out.println(getMario().getRemainingLives());
         // System.out.println(map.isTimeOver());
         return getMario().getRemainingLives() == 0 || map.isTimeOver();
     }

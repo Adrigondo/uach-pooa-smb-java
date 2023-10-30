@@ -9,26 +9,26 @@ import view.ImageLoader;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class Mario extends Hero {
+public class Wario extends Hero {
     public Squire squire;
     private ImageLoader imageLoader;
     private int remainingLives;
     private int coins;
     private int points;
     private double invincibilityTimer;
+    private HeroForm heroForm;
     private boolean toRight = true;
     private float jumpForce = 10;
     private float moveSpeed = 5;
 
-    public Mario(double x, double y, ImageLoader imageLoader) {
+    public Wario(double x, double y, ImageLoader imageLoader) {
         super(x, y, imageLoader);
-        remainingLives = 3;
+        remainingLives = 4;
     }
 
-    public Mario(double x, double y, ImageLoader imageLoader, float jumpForce, float moveSpeed, Dimension dimension,
+    public Wario(double x, double y, ImageLoader imageLoader, float jumpForce, float moveSpeed, Dimension dimension,
             int remainingLives) {
         super(x, y, imageLoader, jumpForce, moveSpeed, dimension, remainingLives);
-        System.out.println("MARIO CONSTRUCTOR:"+this.getHeroForm());
     }
 
     @Override
@@ -36,7 +36,7 @@ public class Mario extends Hero {
         boolean movingInX = (getVelX() != 0);
         boolean movingInY = (getVelY() != 0);
 
-        setStyle(this.getHeroForm().getCurrentStyle(toRight, movingInX, movingInY));
+        setStyle(heroForm.getCurrentStyle(toRight, movingInX, movingInY));
 
         super.draw(g);
     }
@@ -61,20 +61,20 @@ public class Mario extends Hero {
 
     public boolean onTouchEnemy(GameEngine engine) {
 
-        if (!this.getHeroForm().isSuper() && !this.getHeroForm().isFire()) {
+        if (!heroForm.isSuper() && !heroForm.isFire()) {
             remainingLives--;
             engine.playMarioDies();
             return true;
         } else {
             engine.shakeCamera();
-            this.setHeroForm(this.getHeroForm().onTouchEnemy());
+            heroForm = heroForm.onTouchEnemy();
             setDimension(48, 48);
             return false;
         }
     }
 
     public Fireball fire() {
-        return this.getHeroForm().fire(toRight, getX(), getY());
+        return heroForm.fire(toRight, getX(), getY());
     }
 
     public void acquireCoin() {
@@ -86,7 +86,7 @@ public class Mario extends Hero {
     }
 
     public int getRemainingLives() {
-        return this.remainingLives;
+        return remainingLives;
     }
 
     public void setRemainingLives(int remainingLives) {
@@ -101,8 +101,16 @@ public class Mario extends Hero {
         return coins;
     }
 
+    public HeroForm getMarioForm() {
+        return heroForm;
+    }
+
+    public void setMarioForm(HeroForm heroForm) {
+        this.heroForm = heroForm;
+    }
+
     public boolean isSuper() {
-        return this.getHeroForm().isSuper();
+        return heroForm.isSuper();
     }
 
     public boolean getToRight() {

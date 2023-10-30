@@ -2,7 +2,7 @@ package model.prize;
 
 import manager.GameEngine;
 import model.hero.Mario;
-import model.hero.MarioForm;
+import model.hero.HeroForm;
 import view.Animation;
 import view.ImageLoader;
 
@@ -19,15 +19,15 @@ public class FireFlower extends BoostItem {
     public void onTouch(Mario mario, GameEngine engine) {
         mario.acquirePoints(getPoint());
 
-        if (!mario.getMarioForm().isFire()) {
+        if (!mario.getHeroForm().isFire()) {
             engine.playFireFlower();
-            BufferedImage[] leftFrames = engine.getImageLoader().getLeftFrames(MarioForm.FIRE);
+            BufferedImage[] leftFrames = engine.getImageLoader().getLeftFrames(HeroForm.FIRE);
             engine.playFireFlower();
-            BufferedImage[] rightFrames = engine.getImageLoader().getRightFrames(MarioForm.FIRE);
+            BufferedImage[] rightFrames = engine.getImageLoader().getRightFrames(HeroForm.FIRE);
 
             Animation animation = new Animation(leftFrames, rightFrames);
-            MarioForm newForm = new MarioForm(animation, true, true, engine.getImageLoader());
-            mario.setMarioForm(newForm);
+            HeroForm newForm = new HeroForm(animation, true, true, engine.getImageLoader());
+            mario.setHeroForm(newForm);
             mario.setDimension(48, 96);
 
             engine.playFireFlower();

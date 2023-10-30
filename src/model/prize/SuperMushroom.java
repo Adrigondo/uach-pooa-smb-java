@@ -2,7 +2,7 @@ package model.prize;
 
 import manager.GameEngine;
 import model.hero.Mario;
-import model.hero.MarioForm;
+import model.hero.HeroForm;
 import view.Animation;
 import view.ImageLoader;
 
@@ -21,13 +21,13 @@ public class SuperMushroom extends BoostItem {
 
         ImageLoader imageLoader = ImageLoader.getInstance();
 
-        if (!mario.getMarioForm().isSuper()) {
-            BufferedImage[] leftFrames = imageLoader.getLeftFrames(MarioForm.SUPER);
-            BufferedImage[] rightFrames = imageLoader.getRightFrames(MarioForm.SUPER);
+        if (!mario.getHeroForm().isSuper()) {
+            BufferedImage[] leftFrames = imageLoader.getLeftFrames(HeroForm.SUPER);
+            BufferedImage[] rightFrames = imageLoader.getRightFrames(HeroForm.SUPER);
 
             Animation animation = new Animation(leftFrames, rightFrames);
-            MarioForm newForm = new MarioForm(animation, true, false, imageLoader);
-            mario.setMarioForm(newForm);
+            HeroForm newForm = new HeroForm(animation, true, false, imageLoader);
+            mario.setHeroForm(newForm);
             mario.setDimension(48, 96);
 
             engine.playSuperMushroom();

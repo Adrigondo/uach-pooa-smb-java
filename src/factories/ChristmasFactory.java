@@ -13,6 +13,7 @@ public class ChristmasFactory implements GUIFactory {
     @Override()
     public Mario createMario(int xLocation, int yLocation, ImageLoader imageLoader) {
         Mario mario = new Mario(xLocation, yLocation, imageLoader, 10, 5, new Dimension(48, 48), 3);
+        System.out.println("CHRISTMAS FACTORY:"+mario.getRemainingLives());
         return mario;
     }
 

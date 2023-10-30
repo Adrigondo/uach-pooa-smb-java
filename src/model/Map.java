@@ -37,11 +37,12 @@ public class Map {
 
 
     public Mario getMario() {
-        return mario;
+        return this.mario;
     }
 
     public void setMario(Mario mario) {
         this.mario = mario;
+        System.out.println("MAP SET MARIO:"+mario.getRemainingLives());
     }
 
     public ArrayList<Enemy> getEnemies() {

@@ -5,7 +5,7 @@ import view.ImageLoader;
 
 import java.awt.image.BufferedImage;
 
-public class MarioForm {
+public class HeroForm {
 
     public static final int SMALL = 0, SUPER = 1, FIRE = 2;
 
@@ -14,7 +14,7 @@ public class MarioForm {
     private boolean isSuper, isFire; // note: fire form has priority over super form
     private BufferedImage fireballStyle;
 
-    public MarioForm(Animation animation, boolean isSuper, boolean isFire, ImageLoader imageLoader) {
+    public HeroForm(Animation animation, boolean isSuper, boolean isFire, ImageLoader imageLoader) {
         this.animation = animation;
         this.isSuper = isSuper;
         this.isFire = isFire;
@@ -43,13 +43,13 @@ public class MarioForm {
         return style;
     }
 
-    public MarioForm onTouchEnemy() {
+    public HeroForm onTouchEnemy() {
         BufferedImage[] leftFrames = imageLoader.getLeftFrames(0);
         BufferedImage[] rightFrames = imageLoader.getRightFrames(0);
 
         Animation newAnimation = new Animation(leftFrames, rightFrames);
 
-        return new MarioForm(newAnimation, false, false, imageLoader);
+        return new HeroForm(newAnimation, false, false, imageLoader);
     }
 
     public Fireball fire(boolean toRight, double x, double y) {
